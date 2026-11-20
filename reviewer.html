@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviewer Dashboard - Research Collab</title>
+    <link rel="stylesheet" href="../../CSS/reviewer.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Research Collab</div>
+            <nav aria-label="Dashboard sections">
+                <ul class="nav-links">
+                    <li><a class="active" href="#rev-assigned" data-section="rev-assigned">Assigned Proposals</a></li>
+                    <li><a href="#rev-evaluate" data-section="rev-evaluate">Submit Evaluation</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 id="headerUserName">Research Reviewer Portal</h1>
+                    <p class="page-description">Review proposals assigned to you and submit structured evaluations</p>
+                </div>
+            </header>
+            <section id="rev-assigned" class="dashboard-section">
+                <div class="card-panel">
+                    <h2>Projects Available and Accepted for Review</h2>
+                    <div id="reviewerAssignedProposals"></div>
+                </div>
+            </section>
+            <section id="rev-evaluate" class="dashboard-section hidden">
+                <div id="reviewerEvaluations" class="card-panel crud-panel">
+                    <h2>Manuscript Evaluations</h2>
+                    <p class="crud-description">Review only proposals assigned to you, then submit structured evaluations.</p>
+                    <form id="evaluationsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="evaluations-proposalRef">Assigned proposal</label>
+                            <select id="evaluations-proposalRef" name="proposalRef" data-options="assigned-proposals" required aria-describedby="evaluations-proposalRef-error">
+                                <option value="">No proposals assigned</option>
+                            </select>
+                            <span id="evaluations-proposalRef-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-originality">Originality (1-5)</label>
+                            <input id="evaluations-originality" name="originality" type="number" min="1" max="5" required aria-describedby="evaluations-originality-error">
+                            <span id="evaluations-originality-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-methodology">Methodology (1-5)</label>
+                            <input id="evaluations-methodology" name="methodology" type="number" min="1" max="5" required aria-describedby="evaluations-methodology-error">
+                            <span id="evaluations-methodology-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-clarity">Clarity (1-5)</label>
+                            <input id="evaluations-clarity" name="clarity" type="number" min="1" max="5" required aria-describedby="evaluations-clarity-error">
+                            <span id="evaluations-clarity-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-recommendation">Recommendation</label>
+                            <select id="evaluations-recommendation" name="recommendation" required aria-describedby="evaluations-recommendation-error">
+                                <option value="">Choose recommendation</option>
+                                <option>Accept</option>
+                                <option>Revision</option>
+                                <option>Reject</option>
+                            </select>
+                            <span id="evaluations-recommendation-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-comments">Review comments</label>
+                            <textarea id="evaluations-comments" name="comments" required placeholder="Provide structured review comments" aria-describedby="evaluations-comments-error"></textarea>
+                            <span id="evaluations-comments-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluations-reviewDate">Review date</label>
+                            <input id="evaluations-reviewDate" name="reviewDate" type="date" required aria-describedby="evaluations-reviewDate-error">
+                            <span id="evaluations-reviewDate-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Submit evaluation</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../../JS/Reviewer.js?v=3"></script>
+</body>
+</html>
