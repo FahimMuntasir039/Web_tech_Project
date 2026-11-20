@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Dashboard - Research Collab</title>
+    <link rel="stylesheet" href="../../CSS/supervisor.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Research Collab</div>
+            <nav aria-label="Dashboard sections">
+                <ul class="nav-links">
+                    <li><a class="active" href="#sup-proposals" data-section="sup-proposals">Projects &amp; Proposals</a></li>
+                    <li><a href="#sup-external-review" data-section="sup-external-review">External Review</a></li>
+                    <li><a href="#sup-feedback-progress" data-section="sup-feedback-progress">Documents &amp; Feedback</a></li>
+                    <li><a href="#sup-milestones-meetings" data-section="sup-milestones-meetings">Milestones &amp; Meetings</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 id="headerUserName">Supervisor Dashboard</h1>
+                    <p class="page-description">Review proposals, monitor researcher progress, provide feedback, and schedule meetings</p>
+                </div>
+            </header>
+            <section id="sup-proposals" class="dashboard-section">
+                <div id="supervisorProposals" class="card-panel">
+                    <h2>Research Project Proposals &amp; Decisions</h2>
+                    <p class="crud-description">Review project proposals submitted by researchers assigned to you. Approve or reject each proposal, then monitor progress.</p>
+                    <div id="supervisorProjectApprovals" class="table-wrapper"></div>
+                    <p id="supervisorProjectApprovalMessage" class="crud-message" role="status" aria-live="polite"></p>
+                </div>
+            </section>
+            <section id="sup-external-review" class="dashboard-section hidden">
+                <div class="card-panel">
+                    <h2>Project External Review</h2>
+                    <p class="crud-description">Select an approved project and choose a folder from your system. The folder contents will be available to the reviewer who accepts it.</p>
+                    <form id="externalReviewForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="externalReviewProject">Approved project</label>
+                            <select id="externalReviewProject" required>
+                                <option value="">No approved projects available</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="externalReviewFolder">Project folder</label>
+                            <input id="externalReviewFolder" type="file" webkitdirectory directory multiple required>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Set project folder for review</button>
+                        </div>
+                    </form>
+                    <div id="supervisorExternalReview" class="table-wrapper"></div>
+                    <p id="supervisorExternalReviewMessage" class="crud-message" role="status" aria-live="polite"></p>
+                </div>
+            </section>
+            <section id="sup-feedback-progress" class="dashboard-section hidden">
+                <div class="card-panel">
+                    <h2>Supervised Project Documents</h2>
+                    <p class="crud-description">Open a document version before choosing it in the feedback form below.</p>
+                    <div id="supervisorDocuments" class="table-wrapper"></div>
+                    <p id="supervisorDocumentStatus" class="crud-message" role="status" aria-live="polite"></p>
+                </div>
+                <div id="supervisorFeedback" class="card-panel crud-panel">
+                    <h2>Document Feedback</h2>
+                    <form id="feedbackForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="feedback-documentRef">Assigned project document</label>
+                            <select id="feedback-documentRef" name="documentRef" data-options="documents" required aria-describedby="feedback-documentRef-error">
+                                <option value="">No supervised documents yet</option>
+                            </select>
+                            <span id="feedback-documentRef-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="feedback-comments">Academic comments</label>
+                            <textarea id="feedback-comments" name="comments" required placeholder="Write detailed feedback and recommendations" aria-describedby="feedback-comments-error"></textarea>
+                            <span id="feedback-comments-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="feedback-date">Feedback date</label>
+                            <input id="feedback-date" name="date" type="date" required aria-describedby="feedback-date-error">
+                            <span id="feedback-date-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add feedback entry</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="sup-milestones-meetings" class="dashboard-section hidden">
+                <div id="supervisorMilestones" class="card-panel crud-panel">
+                    <h2>Project Milestones</h2>
+                    <form id="milestonesForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="milestones-projectRef">Supervised project</label>
+                            <select id="milestones-projectRef" name="projectRef" data-options="projects" required aria-describedby="milestones-projectRef-error">
+                                <option value="">No supervised projects yet</option>
+                            </select>
+                            <span id="milestones-projectRef-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="milestones-title">Milestone</label>
+                            <input id="milestones-title" name="title" type="text" required placeholder="e.g. Literature review" aria-describedby="milestones-title-error">
+                            <span id="milestones-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="milestones-dueDate">Due date</label>
+                            <input id="milestones-dueDate" name="dueDate" type="date" required aria-describedby="milestones-dueDate-error">
+                            <span id="milestones-dueDate-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="milestones-status">Status</label>
+                            <select id="milestones-status" name="status" required aria-describedby="milestones-status-error">
+                                <option value="">Choose status</option>
+                                <option>Not started</option>
+                                <option>Submitted</option>
+                                <option>Approved</option>
+                                <option>Needs revision</option>
+                            </select>
+                            <span id="milestones-status-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="milestones-notes">Notes</label>
+                            <textarea id="milestones-notes" name="notes" placeholder="Optional milestone notes" aria-describedby="milestones-notes-error"></textarea>
+                            <span id="milestones-notes-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add milestone</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="supervisorMeetings" class="card-panel crud-panel">
+                    <h2>Supervision Meetings</h2>
+                    <form id="meetingsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="meetings-projectRef">Supervised project</label>
+                            <select id="meetings-projectRef" name="projectRef" data-options="projects" required aria-describedby="meetings-projectRef-error">
+                                <option value="">No supervised projects yet</option>
+                            </select>
+                            <span id="meetings-projectRef-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="meetings-scheduledAt">Meeting date and time</label>
+                            <input id="meetings-scheduledAt" name="scheduledAt" type="datetime-local" required aria-describedby="meetings-scheduledAt-error">
+                            <span id="meetings-scheduledAt-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="meetings-agenda">Agenda</label>
+                            <textarea id="meetings-agenda" name="agenda" required placeholder="Topics to discuss" aria-describedby="meetings-agenda-error"></textarea>
+                            <span id="meetings-agenda-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="meetings-location">Meeting location or link</label>
+                            <input id="meetings-location" name="location" type="text" required placeholder="Room or meeting URL" aria-describedby="meetings-location-error">
+                            <span id="meetings-location-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add meeting</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../../JS/Supervisor.js?v=6"></script>
+</body>
+</html>
