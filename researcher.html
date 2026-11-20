@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Dashboard - Research Collab</title>
+    <link rel="stylesheet" href="../../CSS/researcher.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Research Collab</div>
+            <nav aria-label="Dashboard sections">
+                <ul class="nav-links">
+                    <li><a class="active" href="#sec-projects" data-section="sec-projects">Projects &amp; collaborators</a></li>
+                    <li><a href="#sec-documents" data-section="sec-documents">Papers &amp; datasets</a></li>
+                    <li><a href="#sec-management" data-section="sec-management">Tasks, notes &amp; citations</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 id="headerUserName">Researcher Dashboard</h1>
+                    <p class="page-description">Manage collaborative projects, uploaded versions, tasks, citations, and deadlines</p>
+                </div>
+            </header>
+            <section id="sec-projects" class="dashboard-section">
+                <div id="researcherProjects" class="card-panel crud-panel">
+                    <h2>Research Projects</h2>
+                    <p class="crud-description">Create projects, assign a supervisor, and invite existing researchers by email.</p>
+                    <form id="projectsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="projects-title">Project title</label>
+                            <input id="projects-title" name="title" type="text" required placeholder="Enter a project title" aria-describedby="projects-title-error">
+                            <span id="projects-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-description">Project description</label>
+                            <textarea id="projects-description" name="description" required placeholder="Describe the research project" aria-describedby="projects-description-error"></textarea>
+                            <span id="projects-description-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-objectives">Research objectives</label>
+                            <textarea id="projects-objectives" name="objectives" required placeholder="Describe the research objectives" aria-describedby="projects-objectives-error"></textarea>
+                            <span id="projects-objectives-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-domain">Research domain</label>
+                            <input id="projects-domain" name="domain" type="text" required placeholder="e.g. data science" aria-describedby="projects-domain-error">
+                            <span id="projects-domain-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-supervisorId">Supervisor</label>
+                            <select id="projects-supervisorId" name="supervisorId" data-options="supervisors" aria-describedby="projects-supervisorId-error">
+                                <option value="">No supervisor assigned</option>
+                            </select>
+                            <span id="projects-supervisorId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-collaboratorSearch">Search collaborator by email</label>
+                            <input id="projects-collaboratorSearch" type="search" placeholder="researcher@example.edu">
+                            <button id="projects-addCollaborator" class="btn-secondary btn-small" type="button">Invite collaborator</button>
+                            <input id="projects-collaboratorIds" name="collaboratorIds" type="hidden" value="">
+                            <input id="projects-collaboratorEmails" name="collaboratorEmails" type="hidden" value="">
+                            <input id="projects-collaboratorStatuses" name="collaboratorStatuses" type="hidden" value="">
+                            <input id="projects-collaboratorProjectId" type="hidden" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-endDate">Target end date</label>
+                            <input id="projects-endDate" name="endDate" type="date" required aria-describedby="projects-endDate-error">
+                            <span id="projects-endDate-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="projects-privacy">Project privacy</label>
+                            <select id="projects-privacy" name="privacy" required aria-describedby="projects-privacy-error">
+                                <option value="">Choose privacy</option>
+                                <option value="Private">Private</option>
+                                <option value="Shared with collaborators">Shared with collaborators</option>
+                            </select>
+                            <span id="projects-privacy-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add project</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-panel">
+                    <h2>Project Invitations</h2>
+                    <p class="crud-description">Accept invitations to become a project collaborator.</p>
+                    <div id="researcherProjectInvitations"></div>
+                </div>
+            </section>
+            <section id="sec-documents" class="dashboard-section hidden">
+                <div id="researcherDocuments" class="card-panel crud-panel">
+                    <h2>Research Documents</h2>
+                    <p class="crud-description">Upload papers and datasets. Each saved version is kept in this browser and listed in the version history.</p>
+                    <form id="documentsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="documents-projectId">Research project</label>
+                            <select id="documents-projectId" name="projectId" data-options="projects" required aria-describedby="documents-projectId-error">
+                                <option value="">No projects available</option>
+                            </select>
+                            <span id="documents-projectId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="documents-title">Document title</label>
+                            <input id="documents-title" name="title" type="text" required placeholder="e.g. Literature review draft" aria-describedby="documents-title-error">
+                            <span id="documents-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="documents-kind">Material type</label>
+                            <select id="documents-kind" name="kind" required aria-describedby="documents-kind-error">
+                                <option value="">Choose material type</option>
+                                <option value="Research paper">Research paper</option>
+                                <option value="Dataset">Dataset</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span id="documents-kind-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="documents-file">Paper or dataset file</label>
+                            <input id="documents-file" name="file" type="file" required aria-describedby="documents-file-error">
+                            <span id="documents-file-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="documents-version">Version / change log</label>
+                            <input id="documents-version" name="version" type="text" required placeholder="e.g. v1 - initial draft" aria-describedby="documents-version-error">
+                            <span id="documents-version-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="documents-changeNotes">Version notes</label>
+                            <textarea id="documents-changeNotes" name="changeNotes" required placeholder="Describe this document version" aria-describedby="documents-changeNotes-error"></textarea>
+                            <span id="documents-changeNotes-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add document</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="sec-management" class="dashboard-section hidden">
+                <div class="card-panel">
+                    <h2>Upcoming and overdue deadlines</h2>
+                    <ul id="deadlineList" class="deadline-list"></ul>
+                </div>
+                <div id="researcherTasks" class="card-panel crud-panel">
+                    <h2>Research Tasks &amp; Deadlines</h2>
+                    <form id="tasksForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="tasks-projectId">Research project</label>
+                            <select id="tasks-projectId" name="projectId" data-options="projects" required aria-describedby="tasks-projectId-error">
+                                <option value="">No projects available</option>
+                            </select>
+                            <span id="tasks-projectId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-title">Task title</label>
+                            <input id="tasks-title" name="title" type="text" required placeholder="Task description" aria-describedby="tasks-title-error">
+                            <span id="tasks-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-description">Task details</label>
+                            <textarea id="tasks-description" name="description" placeholder="Describe the task" aria-describedby="tasks-description-error"></textarea>
+                            <span id="tasks-description-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-priority">Priority</label>
+                            <select id="tasks-priority" name="priority" required aria-describedby="tasks-priority-error">
+                                <option value="">Choose priority</option>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </select>
+                            <span id="tasks-priority-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-dueDate">Due date</label>
+                            <input id="tasks-dueDate" name="dueDate" type="date" required aria-describedby="tasks-dueDate-error">
+                            <span id="tasks-dueDate-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-assigneeId">Assign task to</label>
+                            <select id="tasks-assigneeId" name="assigneeId" data-options="assignees" required aria-describedby="tasks-assigneeId-error">
+                                <option value="">Choose assignee</option>
+                            </select>
+                            <span id="tasks-assigneeId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-status">Status</label>
+                            <select id="tasks-status" name="status" required aria-describedby="tasks-status-error">
+                                <option value="">Choose status</option>
+                                <option>To Do</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                            </select>
+                            <span id="tasks-status-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add task</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="researcherNotes" class="card-panel crud-panel">
+                    <h2>Research Notes</h2>
+                    <form id="notesForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="notes-projectId">Research project</label>
+                            <select id="notes-projectId" name="projectId" data-options="projects" required aria-describedby="notes-projectId-error">
+                                <option value="">No projects available</option>
+                            </select>
+                            <span id="notes-projectId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes-title">Note heading</label>
+                            <input id="notes-title" name="title" type="text" required placeholder="Enter note title" aria-describedby="notes-title-error">
+                            <span id="notes-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes-content">Observations / citation</label>
+                            <textarea id="notes-content" name="content" required placeholder="Write your note or citation" aria-describedby="notes-content-error"></textarea>
+                            <span id="notes-content-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add note</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="researcherCitations" class="card-panel crud-panel">
+                    <h2>Research Citations</h2>
+                    <form id="citationsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="citations-projectId">Research project</label>
+                            <select id="citations-projectId" name="projectId" data-options="projects" required aria-describedby="citations-projectId-error">
+                                <option value="">No projects available</option>
+                            </select>
+                            <span id="citations-projectId-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="citations-title">Article or book title</label>
+                            <input id="citations-title" name="title" type="text" required placeholder="Reference title" aria-describedby="citations-title-error">
+                            <span id="citations-title-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="citations-authors">Authors</label>
+                            <input id="citations-authors" name="authors" type="text" required placeholder="Author names" aria-describedby="citations-authors-error">
+                            <span id="citations-authors-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="citations-year">Publication year</label>
+                            <input id="citations-year" name="year" type="number" min="1000" max="2100" required aria-describedby="citations-year-error">
+                            <span id="citations-year-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="citations-source">Journal / publisher</label>
+                            <input id="citations-source" name="source" type="text" required placeholder="Publication name" aria-describedby="citations-source-error">
+                            <span id="citations-source-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="citations-url">DOI or URL</label>
+                            <input id="citations-url" name="url" type="url" placeholder="https://..." aria-describedby="citations-url-error">
+                            <span id="citations-url-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add citation</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../../JS/Researcher.js?v=15"></script>
+</body>
+</html>
