@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Research Collab</title>
+    <link rel="stylesheet" href="../../CSS/admin.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Research Collab</div>
+            <nav aria-label="Dashboard sections">
+                <ul class="nav-links">
+                    <li><a class="active" href="#adm-users" data-section="adm-users">User Management</a></li>
+                    <li><a href="#adm-settings" data-section="adm-settings">Institution Settings</a></li>
+                    <li><a href="#adm-logs" data-section="adm-logs">System Activity Logs</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 id="headerUserName">System Administration</h1>
+                    <p class="page-description">Platform users, permissions, and system monitoring</p>
+                </div>
+            </header>
+            <section id="adm-users" class="dashboard-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Registered Users</h3>
+                        <div class="value" id="adminUserCount">0</div>
+                    </div>
+                </div>
+                <div id="adminUsers" class="card-panel crud-panel">
+                    <h2>User Management</h2>
+                    <p class="crud-description">Create, update, activate, or remove platform accounts. Changing a role updates dashboard access; inactivating an account blocks sign-in. Enter a password while editing to reset it.</p>
+                    <form class="crud-form" id="adminUserForm" novalidate>
+                        <div class="form-group">
+                            <label for="adminUserName">Full name</label>
+                            <input id="adminUserName" name="name" type="text" required aria-describedby="adminUserNameError">
+                            <span id="adminUserNameError" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminUserEmail">Email</label>
+                            <input id="adminUserEmail" name="email" type="email" required aria-describedby="adminUserEmailError">
+                            <span id="adminUserEmailError" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminUserRole">Role</label>
+                            <select id="adminUserRole" name="role" required aria-describedby="adminUserRoleError">
+                                <option value="researcher">Researcher</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="reviewer">Reviewer</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <span id="adminUserRoleError" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminUserPassword">Password (required for new accounts)</label>
+                            <input id="adminUserPassword" name="password" type="password" minlength="6" required aria-describedby="adminUserPasswordError">
+                            <span id="adminUserPasswordError" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminUserStatus">Status</label>
+                            <select id="adminUserStatus" name="status" aria-describedby="adminUserStatusError">
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                            <span id="adminUserStatusError" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add user</button>
+                            <button class="btn-secondary hidden" id="cancelAdminUserEdit" type="button">Cancel edit</button>
+                        </div>
+                    </form>
+                    <p id="adminUserMessage" class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="adm-settings" class="dashboard-section hidden">
+                <div id="adminSettings" class="card-panel crud-panel">
+                    <h2>Institution Settings</h2>
+                    <form id="adminSettingsForm" class="crud-form" novalidate>
+                        <div class="form-group">
+                            <label for="admin-setting-institution">Institution name</label>
+                            <input id="admin-setting-institution" name="institution" type="text" required placeholder="Institution name" aria-describedby="admin-setting-institution-error">
+                            <span id="admin-setting-institution-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-setting-faculty">Faculty</label>
+                            <input id="admin-setting-faculty" name="faculty" type="text" required placeholder="Faculty or school" aria-describedby="admin-setting-faculty-error">
+                            <span id="admin-setting-faculty-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-setting-department">Department</label>
+                            <input id="admin-setting-department" name="department" type="text" required placeholder="Department name" aria-describedby="admin-setting-department-error">
+                            <span id="admin-setting-department-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-setting-contactEmail">Contact email</label>
+                            <input id="admin-setting-contactEmail" name="contactEmail" type="email" required placeholder="admin@example.edu" aria-describedby="admin-setting-contactEmail-error">
+                            <span id="admin-setting-contactEmail-error" class="field-error" role="alert" hidden></span>
+                        </div>
+                        <div class="crud-form-actions">
+                            <button class="btn-primary" type="submit">Add setting</button>
+                            <button class="btn-secondary hidden" type="button" data-cancel-edit>Cancel edit</button>
+                        </div>
+                    </form>
+                    <p class="crud-message" role="status" aria-live="polite"></p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr data-table-headers></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section id="adm-logs" class="dashboard-section hidden">
+                <div class="card-panel">
+                    <h2>System Activity Logs</h2>
+                    <p class="crud-description">Recent sign-ins, account changes, and role actions recorded in this browser. This prototype does not sync audit history across devices.</p>
+                    <div id="adminActivityLogs" class="table-wrapper"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../../JS/Admin.js"></script>
+</body>
+</html>
